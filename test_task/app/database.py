@@ -1,0 +1,6 @@
+import psycopg2
+
+from app.settings import settings
+
+def get_connection():
+    return psycopg2.connect(settings.DATABASE_URL_psycopg2)

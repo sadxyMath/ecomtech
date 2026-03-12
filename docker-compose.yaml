@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  ecomtech_postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: postgres_ecomtech
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123456789
+    ports:
+      - "10000:5432"
+    volumes:
+      - ecomtech_postgres_data:/var/lib/postgresql/data
+      - ./test_task/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ecomtech-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d postgres_ecomtech"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ecomtech_service:
+    build: test_task
+    environment:
+      PORT: 8000
+      DB_USER: admin
+      DB_PASSWORD: 123456789
+      DB_HOST: ecomtech_postgres
+      DB_PORT: 5432
+      DB_NAME: postgres_ecomtech
+    ports:
+      - "8000:8000"
+    depends_on:
+      ecomtech_postgres:
+        condition: service_healthy
+    networks:
+      - ecomtech-network
+
+volumes:
+  ecomtech_postgres_data:
+
+networks:
+  ecomtech-network:
+    driver: bridge
