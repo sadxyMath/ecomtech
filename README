@@ -9,3 +9,10 @@ docker-compose up --build
 
 3. После запуска:
 В браузере перейти по ссылке http://localhost:8000/docs
+
+Данные для подключения к серверу в GUI:
+DB_USER=admin
+DB_PASSWORD=123456789
+DB_HOST=localhost
+DB_PORT=10000
+DB_NAME=postgres_ecomtech
